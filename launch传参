@@ -1,0 +1,36 @@
+<!-- -->
+launch 文件:
+
+<launch>
+
+  <!-- send table.xml to param server -->
+  <arg name="init_x" default="0.0" />
+
+  
+  <node pkg="lidar_localizer" type="ndt_mapping_tku" name="ndt_mapping_tku" output="screen">
+    <param name="init_x" value="$(arg init_x)" />
+    <param name="map_name" type="string" value="/home/light/test/changfang_tkuNew.pcd" />
+  </node>
+  
+</launch>
+
+cpp文件里
+
+static std::string _mapname;
+
+void save_nd_map(const char *name);
+
+void save_nd_map(const char *name)
+{
+	...
+}
+
+int main()
+{
+  ros::NodeHandle nh;
+  ros::NodeHandle private_nh("~");
+  private_nh.getParam("init_x", g_ini_x);
+  private_nh.param<std::string>("map_name", _mapname, "/home/light/test/changfang_tku.pcd");
+  //string 转 char * 用.c_str()只能转到const char*注意
+  save_nd_map(_mapname.c_str());
+}
